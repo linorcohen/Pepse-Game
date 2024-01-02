@@ -1,0 +1,130 @@
+linorcohen
+318861226
+test2
+test2
+
+
+=============================
+=      UML differences     =
+=============================
+UML before:
+Before starting the project, we created a UML diagram based on the instructions and the required methods
+for the game to function. The diagram includes a few basic functions that were sufficient to develop the game.
+I also had plans to include a water block in the game.
+
+UML after:
+We made a significant change to the UML by breaking up the methods that needed to be implemented into
+smaller, more specialized methods. Each of these methods is now responsible for a specific task.
+Additionally, we added the RangeMutator interface and the Animals, Fox, InfinityLoop, and Leaf classes,
+which make it easier to create and remove objects. Initially, we were unsure about how to properly connect
+the classes in the UML, but as we began implementing the code, the connections became clearer.
+
+
+=============================
+=  Infinity implementation  =
+=============================
+The InfinityLoop class represents a game world that loops indefinitely. It is designed to be updated when
+the player character (avatar) moves close enough to the edges of the loop. the class has a range for the
+minimum and maximum distance the avatar can be from the edge before the world updates.
+The class also has an array of RangeMutator objects, which are responsible for creating and removing objects
+within a given range.
+The InfinityLoop class has two private methods, updateRightSide and updateLeftSide, which update
+the world by removing and creating objects in the array and adjusting the minimum x-coordinates for the
+left and right sides of the loop. These methods are called by the update method, which compares the avatar's
+current position to its previous position to determine if it has moved close enough to the edge of the loop
+to trigger an update. If the avatar has moved close enough to the right or left edge, the update method will
+call the corresponding update method to remove and create objects and adjust the minimum x-coordinates.
+Finally, the update method stores the avatar's current position for use in the next call.
+
+
+=============================
+=  Trees implementation     =
+=============================
+The Tree class is a RangeMutator that creates and removes trees in a game world.
+It has a fixed probability for generating a tree, and it receives seed value to generate each tree position
+in a fixed random y-coordinates.
+
+The Tree class has two private methods, plantTree and addLeafToTree, which are used to create
+a single tree with a stump and leaves.
+The plantTree method creates a stump object and calls the addLeafToTree method to generate a group of leaves.
+The addLeafToTree method generates a grid of Leaf objects within a fixed radius around the tree's stump,
+using a random number generator to determine which leaf objects to actually create.
+
+The createInRange method generates trees within the given range by calling the plantTree method
+on a grid of x-coordinates. The removeInRange method removes all the tree objects within the given range
+by removing the planted trees objects in the allTreesMap map.
+
+The Tree class was implemented this way to allow for the efficient creation and removal of trees in
+the game world. The use of RangeMutator interface allows for easy integration with infinity world program.
+The use of a groundHeightAt function that determine the ground height at a given x-coordinate allows for the
+trees to be placed correctly in the game world.
+The use of a random number generator allows for a randomly placement of trees in the game.
+
+In addition we decided to implement a hashmap that holds each tree, and the objects that creates it,
+in each x-coordinates that we planted. this way we could efficiently find and remove a given tree in a
+position that is outside of the bonds of the game.
+
+The Leaf class represents a leaf object in a game. It extends the GameObject class,
+which provides basic functionality for objects in the game, such as override collision functions.
+The Leaf class adds additional behavior specific to a leaf, such as rotating and changing size over time,
+fading out and falling to the ground, and being reborn on a tree.
+
+
+The Leaf class has several methods for setting up and scheduling its behavior.
+The setLeafProperties method sets up the leaf's movement, size change, and fading out behavior by scheduling
+ScheduledTasks.
+-The setLeafFadeOutScheduleTask method schedules a task that will make the leaf fall to
+the ground and fade out after a certain amount of time.
+-The getRebornScheduleTask method returns a Runnable that schedules a task to make the leaf fade back in
+and reappear on a tree after a certain amount of time.
+-The setLeafFallingMovement method sets up the movement of the leaf as it falls to the ground.
+-The setMovingTaskSchedule and setSizeChangeTaskSchedule methods schedule tasks that make the leaf rotate
+and change size over time.
+
+The decision to create a Leaf class that extends GameObject comes from the need to set a collision
+properties,in case the leaf fall to the ground and say on the ground.
+
+
+=============================
+=      Design details       =
+=============================
+One of our main challenges was figuring out how to implement the infinite world program.
+We initially implemented the removeInRange method, which worked in a similar way to the createInRange method,
+but instead of creating objects within a given range, it removed them.
+However, we realized we needed a more efficient way to access and remove the trees or bricks within a
+specific range. To solve this issue, we created a map that stored each object at a specific x-coordinate,
+allowing us to easily access and remove the objects within a given x-coordinate range.
+
+After implementing the createInRange and removeInRange methods in the relevant classes, we created a
+manager class called InfinityLoop to handle the creation and removal of objects within a given range
+based on the avatar's movement to the right or left.
+However, we noticed that the InfinityLoop class contained a lot of duplicate code and realized that if we
+wanted to add more objects to the game that required updating in the infinite world, we would need to
+update the InfinityLoop class as well. To avoid this issue, we decided to implement an interface called
+RangeMutator, which each object that needed updating in InfinityLoop would implement.
+This allowed us to pass a list of objects to InfinityLoop that all implemented the
+createInRange and removeInRange methods.
+
+
+=============================
+=      Bonus details        =
+=============================
+The Animals class is responsible for creating and removing animals within a specified range in the game world.
+The class implements RangeMutator so it implements the methods createInRange, which creates animals within
+a given range of x-coordinates with a certain probability. It also implements the removeInRange method which
+removes all animals within a given range of x-coordinates.
+
+The Fox class represents a type of game object that can jump around in the game world,
+It is an extension of the GameObject class.
+The Fox class has a constructor that is used to create an instance of a Fox.
+the constructor method require an integer seed value for a Random object that will be used to generate
+random numbers.
+
+This update method updates the acceleration, velocity, and renderable of an object in a game.
+If the object's velocity along the y-axis is not zero and the object's current renderable is
+not the movingRender, then the object's renderable is set to movingRender.
+If the object's velocity along the y-axis is zero, then the object's renderable is set to standingRender.
+
+Note - I redesigned the game's visuals to improve its aesthetic appeal and make it more enjoyable to play.
+
+
