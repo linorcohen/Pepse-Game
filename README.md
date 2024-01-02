@@ -1,4 +1,4 @@
-# Ex5 - Pepse game 
+# Pepse game 
 
 This game, developed using OOP principles, is an endless, side-scrolling platformer reminiscent of classic Super Mario.  
 It features a pixel-art world with dynamic elements like mountains, trees with falling and regenerating leaves, and randomly jumping foxes.  
